@@ -1,0 +1,74 @@
+https://medium.com/@gnsrikanth/implementing-asymmetric-encryption-to-secure-your-project-35368049cb5f
+`easy_install pycrypto`
+pip install PyCryptodome
+pip install flask
+pip install websocket-client
+
+
+
+
+
+https://pycryptodome.readthedocs.io/en/latest/src/signature/pkcs1_v1_5.html
+https://gist.github.com/adamar/a4c573c724f647d7fdcfce5a0f1638d9
+https://websockets.readthedocs.io/en/stable/intro.html
+
+#generate private/public key
+from Crypto.PublicKey import RSA
+key = RSA.generate(2048)
+private_key = key.export_key()
+public_key = key.publickey().export_key()
+
+#create signature
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA384
+
+
+digest = SHA384.new()
+digest.update(b"data")
+
+signer = pkcs1_15.new(RSA.import_key(private_key))
+sig = signer.sign(digest)
+
+#verify
+
+
+#generate_key
+RSA.importKey(private_key)
+
+
+
+TODO:
+- add amount to wallet(admin-promotion)
+- add transactions thouth a miner
+
+
+# Requests to api
+
+## Set machine host
+$ export HOST=http://localhost:5000
+
+
+## Get info (Admin)
+$ curl -X get $HOST/info/wallets
+
+## Create wallet
+$ curl -X POST  \
+	-d "username=XPTO" \
+	$HOST/wallets
+
+## Create block
+ export PRIVATE_KEY="XPTO"
+ export PUBLIC_KEY="asdf"
+
+ curl -X POST  \
+	-H "Content-Type: Application/Json" \
+	-d '
+	 	[
+	 	  {
+	 	  	"private_key": "`$PRIVATE_KEY`",
+	 	  	"public_key": "$PUBLIC_KEY",
+	 	  	"amount": 4
+	 	  }
+	 	]
+	' \
+	$HOST/block
