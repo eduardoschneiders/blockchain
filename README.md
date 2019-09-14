@@ -4,6 +4,11 @@ pip install PyCryptodome
 pip install flask
 pip install websocket-client
 
+#Debug
+import pdb;pdb.set_trace()
+$ n //next line
+$ ll //list context
+$ c //continue
 
 
 
@@ -33,7 +38,8 @@ sig = signer.sign(digest)
 
 
 #generate_key
-RSA.importKey(private_key)
+key = RSA.importKey(private_key)
+pkcs1_15.new(key).verify(digest, sig)
 
 
 

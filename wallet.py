@@ -1,36 +1,67 @@
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA384
+import base64
+
 import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
-import base64
+
 
 class Wallet():
   wallets = []
 
-  def __init__(self, username):
+  def __init__(self, username, password):
     self.amount = 0
     self.username = username
-    self.private_key, self.public_key = self.rsakeys()
+    self.password = password
     self.wallets.append(self)
+    self.private_key, self.public_key = self.rsa_keys()
 
-  def rsakeys(self):  
-    length=1024  
-    privatekey = RSA.generate(length, Random.new().read)  
-    publickey = privatekey.publickey()  
-    return privatekey, publickey
+
+  def rsa_keys(self):  
+    key = RSA.generate(2048)
+    private_key = key
+    public_key = key.publickey()
+    return private_key, public_key
+
+  def import_key(self, private_key):
+    self.private_key = private_key
+    self.public_key = private_key.publickey()
 
   def sign(self, data):
-    return base64.b64encode(str((self.private_key.sign(data,''))[0]).encode())
+    signer = pkcs1_15.new(RSA.import_key(self.private_key.export_key()))
+    digest = SHA384.new()
+    digest.update(str.encode(data))
+    return base64.b64encode(str(signer.sign(digest)).encode()).decode()
 
   def to_string(self):
     return { 
       "amount": self.amount,
       "username": self.username,
-      "private_key": self.private_key.exportKey(),
-      "public_key": self.public_key.exportKey()
+      "private_key": self.private_key.exportKey().decode(),
+      "public_key": self.public_key.exportKey().decode()
     }
 
+  def auth(self, username, password):
+    return self.username == username and self.password == password
+
   @classmethod
-  def findWallet(cls, publickey):
+  def find_by_username(cls, username, password):
     for wallet in cls.wallets:
-      if wallet.public_key.exportKey() == publickey:
+      if wallet.auth(username, password):
         return wallet
+
+  @classmethod
+  def find_by_public_key(cls, public_key):
+    for wallet in cls.wallets:
+      if wallet.public_key.exportKey().decode() == public_key:
+        return wallet
+
+  @classmethod
+  def build_from_key(cls, private_key):
+    key = RSA.import_key(private_key)
+    wallet = Wallet()
+    wallet.import_key(key)
+    return wallet
+

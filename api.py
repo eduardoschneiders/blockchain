@@ -1,24 +1,31 @@
 from flask import Flask, jsonify, make_response, request
 from wallet import Wallet
+from blockchain import BlockChain
+from transaction import Transaction
 import json
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
-books = {}
+block_chain = BlockChain()
 
 @app.route('/info/wallets', methods=['GET'])
-def home():
-  return make_response(jsonify([w.to_string() for w in Wallet.wallets]), 200)
+def wallets_info():
+  return make_response(jsonify([wallet.to_string() for wallet in Wallet.wallets]), 200)
+
+@app.route('/info/blockchain', methods=['GET'])
+def blockchain_info():
+  return make_response(jsonify([block.to_string() for block in block_chain.blocks]), 200)
+
+
 
 @app.route('/wallets', methods=['POST'])
 def create_wallet():
-  w = Wallet(request.form.get('username'))
+  wallet = Wallet(request.json['username'], request.json['password'])
 
-  response = { 
-    "private_key": w.private_key.exportKey(),
-    "public_key": w.public_key.exportKey(),
-    "username": w.username,
+  response = {
+    "private_key": wallet.private_key.exportKey().decode(),
+    "public_key": wallet.public_key.exportKey().decode(),
   }
 
   return make_response(jsonify(response), 201)
@@ -26,17 +33,14 @@ def create_wallet():
 @app.route('/block', methods=['POST'])
 def create_block():
   for transaction_data in request.json:
-    print((transaction_data))
-  return make_response(jsonify({'response': 'asdf'}), 201)
+    sender_wallet = Wallet.find_by_username(transaction_data['username'], transaction_data['password'])
+    receiver_wallet = Wallet.find_by_public_key(transaction_data['receiver_public_key'])
 
-  w = Wallet(request.form.get('username'))
+    transaction = Transaction(sender_wallet, receiver_wallet, transaction_data['amount'])
+    block_chain.create_block([transaction])
 
-  response = { 
-    "private_key": w.private_key.exportKey(),
-    "public_key": w.public_key.exportKey(),
-    "username": w.username,
-  }
+  response = {}
 
   return make_response(jsonify(response), 201)
 
-app.run()
+app.run('0.0.0.0', 8000, debug=True)
