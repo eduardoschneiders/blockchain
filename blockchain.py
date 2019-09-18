@@ -8,6 +8,9 @@ class BlockChain:
     block.calculate_nonce()
     self.blocks.append(block)
 
+  def build_block(self, transactions):
+    return Block(self.last_hash(), transactions)
+
   def last_hash(self):
     if len(self.blocks) >= 1:
       return self.blocks[-1].hash
@@ -20,10 +23,4 @@ class BlockChain:
       for transaction in block.transactions:
         print(vars(transaction))
 
-
-
 block_chain = BlockChain()
-# block_chain.create_block(['asasdfas asdf asdf df'])
-# block_chain.create_block(['xpto'])
-# block_chain.create_block(['Foo Bar'])
-# block_chain.print_blocks()

@@ -10,8 +10,14 @@ $ n //next line
 $ ll //list context
 $ c //continue
 
+#Start first server:
+$ ./api.py 8001
+8001 http port
 
-
+#Start next servers:
+$ ./api.py 8002 http://0.0.0.0:8001
+8002 http port
+ws://0.0.0.0:8001 node to connect
 
 https://pycryptodome.readthedocs.io/en/latest/src/signature/pkcs1_v1_5.html
 https://gist.github.com/adamar/a4c573c724f647d7fdcfce5a0f1638d9

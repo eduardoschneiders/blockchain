@@ -65,3 +65,6 @@ class Wallet():
     wallet.import_key(key)
     return wallet
 
+  @classmethod
+  def verify(cls, signature, public_key, data):
+    True

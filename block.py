@@ -1,6 +1,7 @@
 import hashlib
 import json
 import datetime
+import time
 
 class Block():
   def __init__(self, prev_hash, transactions):
@@ -11,8 +12,6 @@ class Block():
     self.transactions = transactions
     self.date_time = datetime.datetime.now()
     self.hash = self.calculate_hash()
-    
-    
 
   def calculate_nonce(self):
     while(self.hash[0:self.difficulty_level] != '0' * self.difficulty_level):
