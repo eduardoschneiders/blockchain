@@ -1,9 +1,31 @@
 #### TODO:
 * [ ] Enviar as wallets para o /internal/connect
+* [ ] Wallet verificar assinatura
+* [ ] Quando receber o blockchain de um minerador, verificar se as transações são validas
 * [ ] Amounts não estão sincronizando entre os nodos
 * [ ] Criar uma documentação de como usar o sistema
 * [ ] Exportar o projeto postman
 
+### install libs:
+```
+pip3 install PyCryptodome
+pip3 install flask
+```
+
+### How to start application:
+#### Start first server:
+
+```
+python3 ./api.py 8001
+```
+This means server will start at http port 8001
+
+#### Start the other servers:
+
+```
+python3 ./api.py 8002 http://localhost:8001
+```
+This means server will start at http port 8002 and will connect to the server at the same machine on the port 8001
 
 https://medium.com/@gnsrikanth/implementing-asymmetric-encryption-to-secure-your-project-35368049cb5f
 `easy_install pycrypto`
