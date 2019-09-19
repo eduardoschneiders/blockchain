@@ -23,7 +23,7 @@ def block_miner(queue):
     while queue.qsize() > 0:
       block = queue.get()
 
-      block.nonce = randint(0, 10000)
+      block.nonce = randint(0, 10000) # TODO: remove this
       block.calculate_nonce()
       if block_chain.last_hash() == block.previous_hash:
         block_chain.blocks.append(block) # TODO: verify if block is valid
@@ -46,6 +46,7 @@ if len(sys.argv) > 2:
   response = requests.post(node_uri_to_connect + '/internal/connect', json={ 'self_uri': self_uri })
   nodes_uris = response.json()['nodes_uris']
   block_chain = json_to_object(response.json()['block_chain'])
+  Wallet.import_wallets(json_to_object(response.json()['wallets']))
 
 @app.route('/internal/connect', methods=['POST'])
 def connect_node():
@@ -59,7 +60,8 @@ def connect_node():
   
   response = {
     'nodes_uris': current_nodes,
-    'block_chain': object_to_json(block_chain)
+    'block_chain': object_to_json(block_chain),
+    'wallets': object_to_json(Wallet.export_wallets())
   }
 
   return make_response(jsonify(response), 201)
