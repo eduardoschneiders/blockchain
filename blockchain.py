@@ -3,7 +3,7 @@ class BlockChain:
   def __init__(self):
     self.blocks = []
 
-  def create_block(self, transactions):
+  def create_block(self, transactions): #TODO remove
     block = Block(self.last_hash(), transactions)
     block.calculate_nonce()
     self.blocks.append(block)
@@ -16,6 +16,9 @@ class BlockChain:
       return self.blocks[-1].hash
     else:
       return None
+
+  def is_valid(self, block_chain):
+    return True  #TODO
 
   def print_blocks(self):
     for block in self.blocks:

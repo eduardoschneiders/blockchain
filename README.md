@@ -1,7 +1,8 @@
 #### TODO:
-* [ ] Amounts não estão sincronizando entre os nodos
+* [ ] Atualizar o Amount do minerador
 * [ ] Wallet verificar assinatura
 * [ ] Quando receber o blockchain de um minerador, verificar se as transações são validas
+* [x] Amounts não estão sincronizando entre os nodos
 * [x] Enviar as wallets para o /internal/connect
 * [x] Criar uma documentação de como usar o sistema
 * [x] Exportar o projeto postman

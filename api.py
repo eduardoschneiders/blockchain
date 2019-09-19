@@ -92,7 +92,11 @@ def mine_block():
 @app.route('/internal/receive_block_chain', methods=['POST'])
 def receive_block_chain():
   global block_chain
-  block_chain = json_to_object(request.json['blockchain'])
+  candidate_block_chain = json_to_object(request.json['blockchain'])
+
+  if block_chain.is_valid(candidate_block_chain):
+    Wallet.update_wallets(candidate_block_chain.blocks[len(block_chain.blocks):])
+    block_chain = candidate_block_chain
 
   return make_response(jsonify({}), 201)
 

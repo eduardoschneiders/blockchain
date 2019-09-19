@@ -87,3 +87,11 @@ class Wallet():
   def import_wallets(cls, wallets):
     wallets = [wallet.prepare_to_import() for wallet in wallets]
     Wallet.wallets = wallets
+
+  @classmethod
+  def update_wallets(cls, blocks):
+    for block in blocks:
+      for transaction in block.transactions:
+        sender_wallet = Wallet.find_by_public_key(transaction.sender_public_key)
+        receiver_wallet = Wallet.find_by_public_key(transaction.receiver_public_key)
+        transaction.make_transaction(sender_wallet, receiver_wallet)

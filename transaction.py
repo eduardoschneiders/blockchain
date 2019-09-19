@@ -5,10 +5,9 @@ class Transaction():
     self.sender_public_key = sender.public_key.exportKey().decode()
 
     self.receiver_public_key = receiver.public_key.exportKey().decode()
-    self.data_transaction(sender, receiver, amount)
 
-  def data_transaction(self, sender, receiver, amount):
-    sender.amount -= amount
-    receiver.amount += amount
+  def make_transaction(self, sender_wallet, receiver_wallet):
+    sender_wallet.amount -= self.amount
+    receiver_wallet.amount += self.amount
 
     
