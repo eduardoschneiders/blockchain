@@ -27,6 +27,11 @@ python3 ./api.py 8002 http://localhost:8001
 ```
 This means server will start at http port 8002 and will connect to the server at the same machine on the port 8001
 
+#### Criar as wallets e os novos blocos do blockchain
+Importar as collections e as variaveis do postman na pasta /postman do projeto
+Rodas as requests
+
+
 https://medium.com/@gnsrikanth/implementing-asymmetric-encryption-to-secure-your-project-35368049cb5f
 `easy_install pycrypto`
 pip install PyCryptodome
