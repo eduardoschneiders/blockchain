@@ -3,8 +3,8 @@
 * [ ] Wallet verificar assinatura
 * [ ] Quando receber o blockchain de um minerador, verificar se as transações são validas
 * [ ] Amounts não estão sincronizando entre os nodos
-* [ ] Criar uma documentação de como usar o sistema
-* [ ] Exportar o projeto postman
+* [x] Criar uma documentação de como usar o sistema
+* [x] Exportar o projeto postman
 
 ### install libs:
 ```
