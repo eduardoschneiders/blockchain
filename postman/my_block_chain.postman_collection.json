@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "ee995477-1126-4863-87ff-03ac8a0c8f72",
+		"name": "my_block_chain",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d51ced70-c33a-4a1e-b77b-80523bd33338",
+						"exec": [
+							"response = JSON.parse(responseBody);",
+							"pm.environment.set(\"private_key\", response['private_key'].replace(/\\n/g, \"\\\\n\"));",
+							"pm.environment.set(\"public_key\", response['public_key'].replace(/\\n/g, \"\\\\n\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"eduardo\",\n  \"password\": \"password\"\n  \n}"
+				},
+				"url": {
+					"raw": "{{host}}/wallets",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get wallets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/info/wallets",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"info",
+						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get blockchain",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/info/blockchain",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"info",
+						"blockchain"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get nodes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/info/nodes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"info",
+						"nodes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create block",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d51ced70-c33a-4a1e-b77b-80523bd33338",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n   {\n   \t\"username\": \"eduardo\",\n   \t\"password\": \"password\",\n   \t\"receiver_public_key\": \"{{public_key}}\",\n   \t\"amount\": 256\n   }\n ]"
+				},
+				"url": {
+					"raw": "{{host}}/block",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"block"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
