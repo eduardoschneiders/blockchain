@@ -28,6 +28,7 @@ def block_miner(queue):
       if block_chain.last_hash() == block.previous_hash:
         block_chain.blocks.append(block) # TODO: verify if block is valid
         for node_uri in nodes_uris:
+          print('====== Sending to ' + node_uri)
           response = requests.post(node_uri + '/internal/receive_block_chain', json={ 'blockchain': object_to_json(block_chain) })
     time.sleep(1)
 
@@ -51,9 +52,6 @@ def connect_node():
   current_nodes = copy.copy(nodes_uris)
   current_nodes.append(self_uri)
   
-
-
-
   for node_uri in nodes_uris:
       response = requests.post(node_uri + '/internal/add_node', json={ 'node_uri': request.json['self_uri'] })
   
@@ -96,6 +94,12 @@ def receive_block_chain():
 
   return make_response(jsonify({}), 201)
 
+@app.route('/internal/sync_wallets', methods=['POST'])
+def sync_wallets():
+  Wallet.import_wallets(json_to_object(request.json['wallets']))
+
+  return make_response(jsonify({}), 201)
+
 @app.route('/info/wallets', methods=['GET'])
 def wallets_info():
   return make_response(jsonify([wallet.to_string() for wallet in Wallet.wallets]), 200)
@@ -116,6 +120,9 @@ def create_wallet():
     "private_key": wallet.private_key.exportKey().decode(),
     "public_key": wallet.public_key.exportKey().decode(),
   }
+
+  for node_uri in nodes_uris:
+    requests.post(node_uri + '/internal/sync_wallets', json={ 'wallets': object_to_json(Wallet.export_wallets()) })
 
   return make_response(jsonify(response), 201)
 

@@ -2,10 +2,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA384
 import base64
-
-import Crypto
-from Crypto.PublicKey import RSA
-from Crypto import Random
+import copy
 
 
 class Wallet():
@@ -51,12 +48,14 @@ class Wallet():
     for wallet in cls.wallets:
       if wallet.auth(username, password):
         return wallet
+    raise Exception("Wallet not found for username: " + username)
 
   @classmethod
   def find_by_public_key(cls, public_key):
     for wallet in cls.wallets:
       if wallet.public_key.exportKey().decode() == public_key:
         return wallet
+    raise Exception("Wallet not found for public_key: " + public_key)
 
   @classmethod
   def build_from_key(cls, private_key):
@@ -68,3 +67,23 @@ class Wallet():
   @classmethod
   def verify(cls, signature, public_key, data):
     True
+
+  def prepare_to_export(self):
+    dump_wallet = copy.copy(self)
+    dump_wallet.public_key = None
+    dump_wallet.private_key = dump_wallet.private_key.export_key().decode()
+    return dump_wallet
+
+  def prepare_to_import(self):
+    self.private_key = RSA.importKey(self.private_key)
+    self.public_key = self.private_key.publickey()
+    return self
+
+  @classmethod
+  def export_wallets(cls):
+    return [wallet.prepare_to_export() for wallet in Wallet.wallets]
+
+  @classmethod
+  def import_wallets(cls, wallets):
+    wallets = [wallet.prepare_to_import() for wallet in wallets]
+    Wallet.wallets = wallets

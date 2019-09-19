@@ -1,3 +1,10 @@
+TODO:
+[ ] Enviar as wallets para o /internal/connect
+[ ] Amounts não estão sincronizando entre os nodos
+[ ] Criar uma documentação de como usar o sistema
+[ ] Exportar o projeto postman
+
+
 https://medium.com/@gnsrikanth/implementing-asymmetric-encryption-to-secure-your-project-35368049cb5f
 `easy_install pycrypto`
 pip install PyCryptodome
