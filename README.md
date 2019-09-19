@@ -1,3 +1,4 @@
+#### TODO:
 * [ ] Enviar as wallets para o /internal/connect
 * [ ] Amounts não estão sincronizando entre os nodos
 * [ ] Criar uma documentação de como usar o sistema
