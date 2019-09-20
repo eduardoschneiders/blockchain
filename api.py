@@ -27,6 +27,7 @@ def block_miner(queue):
       block.calculate_nonce()
       if block_chain.last_hash() == block.previous_hash:
         block_chain.blocks.append(block) # TODO: verify if block is valid
+        Wallet.update_wallets([block])
         for node_uri in nodes_uris:
           print('====== Sending to ' + node_uri)
           response = requests.post(node_uri + '/internal/receive_block_chain', json={ 'blockchain': object_to_json(block_chain) })
