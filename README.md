@@ -1,6 +1,6 @@
 #### TODO:
-* [ ] Wallet verificar assinatura
 * [ ] Quando receber o blockchain de um minerador, verificar se as transações são validas
+* [x] Wallet verificar assinatura
 * [x] Atualizar o Amount do minerador
 * [x] Amounts não estão sincronizando entre os nodos
 * [x] Enviar as wallets para o /internal/connect
@@ -78,43 +78,5 @@ sig = signer.sign(digest)
 
 
 #generate_key
-key = RSA.importKey(private_key)
+key = RSA.importKey(public_key)
 pkcs1_15.new(key).verify(digest, sig)
-
-
-
-TODO:
-- add amount to wallet(admin-promotion)
-- add transactions thouth a miner
-
-
-# Requests to api
-
-## Set machine host
-$ export HOST=http://localhost:5000
-
-
-## Get info (Admin)
-$ curl -X get $HOST/info/wallets
-
-## Create wallet
-$ curl -X POST  \
-	-d "username=XPTO" \
-	$HOST/wallets
-
-## Create block
- export PRIVATE_KEY="XPTO"
- export PUBLIC_KEY="asdf"
-
- curl -X POST  \
-	-H "Content-Type: Application/Json" \
-	-d '
-	 	[
-	 	  {
-	 	  	"private_key": "`$PRIVATE_KEY`",
-	 	  	"public_key": "$PUBLIC_KEY",
-	 	  	"amount": 4
-	 	  }
-	 	]
-	' \
-	$HOST/block
