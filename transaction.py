@@ -11,7 +11,7 @@ class Transaction():
     self.receiver_public_key = receiver.public_key.export_key().decode()
     self.signature = sender.sign(str(vars(self)))
 
-  def verify(self):
+  def verify_signature(self):
     digest = SHA384.new()
     data = copy.copy(vars(self))
     del data['signature']
@@ -20,6 +20,7 @@ class Transaction():
     pkcs1_15.new(key).verify(digest, base64.b64decode(self.signature))
 
   def make_transaction(self, sender_wallet, receiver_wallet):
+    # TODO validate transaction amount if not admin wallet
     sender_wallet.amount -= self.amount
     receiver_wallet.amount += self.amount
 

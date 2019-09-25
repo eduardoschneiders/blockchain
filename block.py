@@ -21,6 +21,15 @@ class Block():
   def calculate_hash(self):
     return hashlib.sha256(str(self.to_string()).encode()).hexdigest()
 
+  def is_valid(self):
+    for transaction in self.transactions:
+      try:
+        transaction.verify_signature()
+      except Exception as e:
+        return False
+
+    return True
+
   def to_string(self):
     return {
       "difficulty_level": self.difficulty_level,

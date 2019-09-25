@@ -73,7 +73,7 @@ class Wallet():
     Wallet.wallets = wallets
 
   @classmethod
-  def update_wallets(cls, blocks):
+  def update_wallets(cls, blocks): #TODO validate amount for transaction if not an admin wallet
     for block in blocks:
       for transaction in block.transactions:
         sender_wallet = Wallet.find_by_public_key(transaction.sender_public_key)

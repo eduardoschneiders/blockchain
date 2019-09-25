@@ -22,14 +22,16 @@ def block_miner(queue):
   while True:
     while queue.qsize() > 0:
       block = queue.get()
-
       block.nonce = randint(0, 10000) # TODO: remove this
       block.calculate_nonce()
+
       if block_chain.last_hash() == block.previous_hash:
-        block_chain.blocks.append(block) # TODO: verify if block is valid
+        block_chain.blocks.append(block)
         Wallet.update_wallets([block])
+
+        print('====== Found a nounce \\o/')
         for node_uri in nodes_uris:
-          print('====== Sending to ' + node_uri)
+          print('Sending to ' + node_uri)
           response = requests.post(node_uri + '/internal/receive_block_chain', json={ 'blockchain': object_to_json(block_chain) })
     time.sleep(1)
 
@@ -76,15 +78,6 @@ def add_node():
 
 @app.route('/internal/mine_block', methods=['POST'])
 def mine_block():
-  # receive the block
-  # receive the sender address
-  # add block to the pool
-  # verify its not calculated yet
-  # calculate nonce
-  # verify its not calculated yet again
-  # add to blockchain
-  # send to nodes new block
-
   block = json_to_object(request.json['block'])
   block_pool.put(block)
 
@@ -94,12 +87,15 @@ def mine_block():
 def receive_block_chain():
   global block_chain
   candidate_block_chain = json_to_object(request.json['blockchain'])
+  received_blocks = candidate_block_chain.blocks[len(block_chain.blocks):]
 
   if block_chain.is_valid(candidate_block_chain):
-    Wallet.update_wallets(candidate_block_chain.blocks[len(block_chain.blocks):])
+    Wallet.update_wallets(received_blocks)
     block_chain = candidate_block_chain
 
-  return make_response(jsonify({}), 201)
+    return make_response(jsonify({}), 201)
+  else:
+    return make_response(jsonify({}), 400)
 
 @app.route('/internal/sync_wallets', methods=['POST'])
 def sync_wallets():
@@ -134,7 +130,7 @@ def create_wallet():
   return make_response(jsonify(response), 201)
 
 @app.route('/block', methods=['POST'])
-def create_block():
+def create_block(): #TODO validate amount on wallet
   for transaction_data in request.json:
     sender_wallet = Wallet.find_by_username(transaction_data['username'], transaction_data['password'])
     receiver_wallet = Wallet.find_by_public_key(transaction_data['receiver_public_key'])
@@ -145,17 +141,6 @@ def create_block():
 
     for node_uri in nodes_uris:
       response = requests.post(node_uri + '/internal/mine_block', json={ 'block': serialized_builded_block })
-
-    #send to machines
-
-    #simulate other machine receiving the block
-    #calculate nonce
-    #update current blockchain on this machine
-    #send new blockchain
-    #update current blockchain on  machine
-    # block_chain.blocks.append(builded_block) #TODO REMOVE THIS
-
-
 
   response = { "msg": "Block sended to calculate nonce" }
 
