@@ -21,6 +21,9 @@ class BlockChain:
     if len(block_chain.blocks) > 0:
       last_hash = block_chain.blocks[0].hash
 
+      if not block_chain.blocks[0].is_valid():
+        return False
+
     for block in block_chain.blocks[1:]:
       if (last_hash != block.previous_hash) or not block.is_valid():
         return False
