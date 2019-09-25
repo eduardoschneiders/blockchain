@@ -117,7 +117,7 @@ def blockchain_info():
 
 @app.route('/wallets', methods=['POST'])
 def create_wallet():
-  wallet = Wallet(request.json['username'], request.json['password'])
+  wallet = Wallet(request.json['username'], request.json['password'], request.headers.get('is_admin'))
 
   response = {
     "private_key": wallet.private_key.exportKey().decode(),
@@ -131,18 +131,31 @@ def create_wallet():
 
 @app.route('/block', methods=['POST'])
 def create_block(): #TODO validate amount on wallet
+  transactions = []
+  failed_transactions = []
+
   for transaction_data in request.json:
     sender_wallet = Wallet.find_by_username(transaction_data['username'], transaction_data['password'])
     receiver_wallet = Wallet.find_by_public_key(transaction_data['receiver_public_key'])
 
-    transaction = Transaction(sender_wallet, receiver_wallet, transaction_data['amount'])
-    builded_block = block_chain.build_block([transaction])
+    if sender_wallet.is_admin or sender_wallet.amount > transaction_data['amount']:
+      transaction = Transaction(sender_wallet, receiver_wallet, transaction_data['amount'])
+      transactions.append(transaction)
+    else:
+      failed_transactions.append(transaction_data)
+
+  if len(transactions) > 0:
+    builded_block = block_chain.build_block(transactions)
     serialized_builded_block = object_to_json(builded_block)
 
     for node_uri in nodes_uris:
       response = requests.post(node_uri + '/internal/mine_block', json={ 'block': serialized_builded_block })
 
-  response = { "msg": "Block sended to calculate nonce" }
+  response = {
+    "Msg": "Block sended to calculate nonce",
+    "Transactions send": len(transactions),
+    "Failed transactions": failed_transactions
+  }
 
   return make_response(jsonify(response), 201)
 

@@ -8,12 +8,13 @@ import pdb
 class Wallet():
   wallets = []
 
-  def __init__(self, username, password):
+  def __init__(self, username, password, is_admin):
     self.amount = 0
     self.username = username
     self.password = password
-    self.wallets.append(self)
+    self.is_admin = is_admin
     self.private_key, self.public_key = self.rsa_keys()
+    self.wallets.append(self)
 
 
   def rsa_keys(self):
@@ -29,6 +30,7 @@ class Wallet():
 
   def to_string(self):
     return { 
+      "is_admin": self.is_admin,
       "amount": self.amount,
       "username": self.username,
       "private_key": self.private_key.exportKey().decode(),
